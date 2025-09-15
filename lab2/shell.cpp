@@ -19,17 +19,17 @@ int main () {
     // close read end, redirect the stdout to the write end of the pipe 
     if(pipe_1 == 0){
         close(pipefd[0]);
-	dup2(pipefd[1], STDOUT_FILENO);
-	close(pipefd[1]);
-	execvp(cmd1[0], cmd1);
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+		execvp(cmd1[0], cmd1);
     }
     
     pid_t pipe_2 = fork();
     // child 2: 
     // close the write end, redirect the stdin to the read end of the pipe
     if(pipe_2 == 0){
-	close(pipefd[1]);
-	dup2(pipefd[0], STDIN_FILENO);
+		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
         close(pipefd[0]);
         execvp(cmd2[0], cmd2);
     }
