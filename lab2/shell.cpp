@@ -12,16 +12,31 @@ int main () {
 
     // TODO: add functionality
     // Create pipe
+    int pipefd[2];
+    pipe(pipefd);
+    pid_t pipe_1 = fork();
+    // child 1:
+    // close read end, redirect the stdout to the write end of the pipe 
+    if(pipe_1 == 0){
+        close(pipefd[0]);
+	dup2(pipefd[1], STDOUT_FILENO);
+	close(pipefd[1]);
+	execvp(cmd1[0], cmd1);
+    }
     
-    // Create child to run first command
-    // In child, redirect output to write end of pipe
-    // Close the read end of the pipe on the child side.
-    // In child, execute the command
-
-    // Create another child to run second command
-    // In child, redirect input to the read end of the pipe
-    // Close the write end of the pipe on the child side.
-    // Execute the second command.
-
-    // Reset the input and output file descriptors of the parent.
-}
+    pid_t pipe_2 = fork();
+    // child 2: 
+    // close the write end, redirect the stdin to the read end of the pipe
+    if(pipe_2 == 0){
+	close(pipefd[1]);
+	dup2(pipefd[0], STDIN_FILENO);
+        close(pipefd[0]);
+        execvp(cmd2[0], cmd2);
+    }
+    
+    // parent
+    close(pipefd[0]);
+    close(pipefd[1]);
+    
+    return 0;
+}    
