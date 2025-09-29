@@ -1,5 +1,0 @@
-The biggest bottleneck of our implementation of file requesting would be how the data is transferred.
-The data is transferred in strictly sized chunks so the time it takes to request a file would scale quickly with the size of the file.
-In this case there is a max message size of 256 bytes which influences how long the loop takes to execute.
-For every request the client sends, the server has to read the request, seek to a point in the file, read the chunk into a buffer and finally send it back to the client.
-So when the file becomes very large, the time it takes for every request adds up, quickly.
